@@ -61,7 +61,8 @@ class Game {
         new Rule(Rules.pair, 6, "Sechs verteilen"),
         new Rule(Rules.sum, 9, "Vorher trinkt"),
         new Rule(Rules.sum, 11, "Nachher trinkt"),
-        new Rule(Rules.sum, 5, "Sachen holen")
+        new Rule(Rules.sum, 5, "Sachen holen"),
+        new Rule(Rules.sum, 7, "Dixi!" )
     ]
   }
 
@@ -73,14 +74,14 @@ class Game {
         this.playerAtTurn = socket.id;
     }
     console.log("Player added: ", username);
-    this.update()
+    this.update(true)
   }
 
   removePlayer(socket) {
     delete this.sockets[socket.id];
     delete this.playersBySocket[socket.id];
     this.playersByOrder = this.playersByOrder.filter(function(value, index, arr){ return value != socket.id;});
-    this.update()
+    this.update(true)
   }
 
   nextPlayer(){
@@ -115,7 +116,7 @@ class Game {
       console.log(this.dices.dice1);
       console.log(this.dices.dice2);
 
-      if(this.dices.dice1 + this.dices.dice2 == 7){
+      if(this.dices.dice1 + this.dices.dice2 == 6){
           for(var player=0; player < this.playersByOrder.length; player++){
               this.playersBySocket[this.playersByOrder[player]].injail = false;
           }
@@ -132,7 +133,7 @@ class Game {
     }
   }
 
-  update() {
+  update(onlyNewPlayer=false) {
     // Calculate time elapsed
     const now = Date.now();
     const dt = (now - this.lastUpdateTime) / 1000;
@@ -141,11 +142,11 @@ class Game {
     Object.keys(this.sockets).forEach(playerID => {
       const socket = this.sockets[playerID];
       const player = this.playersBySocket[playerID];
-      socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate(player));
+      socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate(player, onlyNewPlayer));
     });
   }
 
-  createUpdate(player, leaderboard) {
+  createUpdate(player,onlyNewPlayer) {
 
     return {
       t: Date.now(),
@@ -153,7 +154,8 @@ class Game {
       dice: this.dices.serializeForUpdate(),
       atturn : this.playerAtTurn,
       rules: this.rule_strings,
-      others: this.playersByOrder.map(p => this.playersBySocket[p].serializeForUpdate())
+      others: this.playersByOrder.map(p => this.playersBySocket[p].serializeForUpdate()),
+      onlyNewPlayer : onlyNewPlayer
     };
   }
 }

@@ -13,17 +13,31 @@ import './css/main.css';
 const playMenu = document.getElementById('play-menu');
 const playButton = document.getElementById('play-button');
 const usernameInput = document.getElementById('username-input');
-const dicerollbutton = document.getElementById('diceroll')
+const dicerollbutton = document.getElementById('diceroll');
+
+const headerClass = document.getElementById('headerclass');
+const dicesClass = document.getElementById('dicesclass');
+const playersClass = document.getElementById('playersclass');
+const rulesClass = document.getElementById('rulesclass');
+
 
 Promise.all([
   connect(onGameOver)
 ]).then(() => {
   playMenu.classList.remove('hidden');
+  headerClass.classList.add('hidden');
+  dicesClass.classList.add('hidden');
+  playersClass.classList.add('hidden');
+  rulesClass.classList.add('hidden');
   usernameInput.focus();
   playButton.onclick = () => {
     // Play!
     play(usernameInput.value);
     playMenu.classList.add('hidden');
+    headerClass.classList.remove('hidden');
+    dicesClass.classList.remove('hidden');
+    playersClass.classList.remove('hidden');
+    rulesClass.classList.remove('hidden');
     initState();
     startRendering();
   };
@@ -34,4 +48,8 @@ function onGameOver() {
   stopCapturingInput();
   stopRendering();
   playMenu.classList.remove('hidden');
+  headerClass.classList.add('hidden');
+  dicesClass.classList.add('hidden');
+  playersClass.classList.add('hidden');
+  rulesClass.classList.add('hidden');
 }

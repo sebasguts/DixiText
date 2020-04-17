@@ -140,3 +140,38 @@ html, body {
       font-size: 14px;
     }
   }
+
+.site {
+    display: grid;
+    grid-template-columns: 1fr repeat(6, minmax(auto, 10em)) 1fr;
+    grid-template-rows: minmax(3em, auto) 1fr auto minmax(1em, auto);
+}
+
+.masthead{
+    grid-column: span 8;
+    text-align: center;
+    grid-row: 0/1;
+    text-emphasis: bold;
+    font-size: 300%;
+}
+
+.players{
+    grid-column: 2/5;
+    grid-row: 2/4;
+}
+
+.dice {
+    grid-column: 5/8;
+    grid-row: 2/3;
+    text-align: center;
+    font-size: xx-large;
+}
+
+.dicefield {
+    font-size: 200%;
+}
+
+.rules {
+    grid-column: 5/8;
+    grid-row: 3/4;
+}

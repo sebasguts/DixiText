@@ -8,20 +8,58 @@ const dicesField = document.getElementById('dices');
 const playersField = document.getElementById('players');
 const rulesField = document.getElementById('rules')
 
-export function render() {
+const diceEmojis = [ "", "⚀","⚁","⚂","⚃","⚄","⚅" ]
+
+function renderRest() {
   const { t, me, dice, atturn, rules, others } = getCurrentState();
+  var player_text = '<table border=0>';
+  for(var i = 0; i < others.length; i++){
+    player_text = player_text + "<tr>";
+    if(others[i].id == atturn){
+      player_text = player_text + "<td>🎲</td>";
+    } else {
+      player_text = player_text + "<td></td>";
+    }
+    player_text = player_text + "<td>" + others[i].username + "</td>";
+    if(others[i].injail){
+      player_text = player_text + "<td>👮</td>";
+    } else {
+      player_text = player_text + "<td></td>";
+    }
+    player_text = player_text + "</tr>";
+  }
+  player_text = player_text + "</table>";
+  playersField.innerHTML = player_text;
+
+  var rules_text = "<ul>";
+  for(var i = 0; i < rules.length; i++){
+    rules_text = rules_text + "<li>" + rules[i] +"</li>";
+  }
+  rules_text = rules_text + "</ul>";
+  rulesField.innerHTML = rules_text;
+  dicesField.innerText = diceEmojis[dice.dice1] + "   " + diceEmojis[dice.dice2];
+}
+
+function dicesRoll (i) {          
+  setTimeout(function () {   
+    dicesField.innerText = diceEmojis[Math.floor( Math.random() * 6 ) +1] + "   " + diceEmojis[Math.floor( Math.random() * 6 ) +1];
+     if (--i){dicesRoll(i)} else {renderRest();};
+  }, 60)
+}    
+
+export function render() {
+
+  const { t, me, dice, atturn, rules, others, onlyNewPlayer } = getCurrentState();
   if (!me) {
     return;
   }
-  console.log(others);
-  dicesField.innerText = dice.dice1 + "   " + dice.dice2;
  // rule_text = rule_test.join(", ");
  // rules.innerText = rule_text;
-  var player_text = "";
-  for(var i = 0; i < others.length; i++){
-    player_text = player_text + others[i].username + " " + (others[i].id == atturn ? "ist and der Reihe, " : " ") + (others[i].injail ? "Gefängnis " : " ")+ "\n";
-  }
-  playersField.innerText = player_text;
+ if(onlyNewPlayer){
+   renderRest();
+ } else {
+    dicesRoll(50);
+ }
 }
 
 
