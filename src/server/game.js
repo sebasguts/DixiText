@@ -78,9 +78,11 @@ class Game {
   }
 
   removePlayer(socket) {
+    if(socket.id == this.playerAtTurn) this.nextPlayer();
     delete this.sockets[socket.id];
     delete this.playersBySocket[socket.id];
     this.playersByOrder = this.playersByOrder.filter(function(value, index, arr){ return value != socket.id;});
+    if(this.playersByOrder.length == 0) this.playerAtTurn = null;
     this.update(true)
   }
 
